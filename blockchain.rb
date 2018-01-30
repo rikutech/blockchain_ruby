@@ -20,15 +20,15 @@ class Blockchain
       proof: proof,
       previous_hash: previous_hash || self.class.hash(@chain[-1])
     }
-    current_transactions = []
-    chain.push block
+    @current_transactions = []
+    @chain.push(block)
     return block
   end
 
-  def new_transaction(sender, recipient, amount)
+  def new_transaction(sender:, recipient:, amount:)
     #新しいトランザクションをリストに加える
-    current_transactions.push({sender: sender, recipient: recipient, amount: amount})
-    last_block.index + 1
+    @current_transactions.push({sender: sender, recipient: recipient, amount: amount})
+    last_block[:index] + 1
   end
 
   def last_block
