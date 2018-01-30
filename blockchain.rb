@@ -1,14 +1,14 @@
 require 'date'
 require 'json'
-require 'openssl'
+require 'digest/sha2'
 
 class Blockchain
-  include OpenSSL::Digest::SHA256
+  attr_reader :chain
 
   def initialize
     @chain = []
     @current_transactions = []
-    new_block(previous_hash: 1, proof=100)
+    new_block(previous_hash: 1, proof: 100)
   end
 
   def new_block(proof, previous_hash=nil)
@@ -52,12 +52,12 @@ class Blockchain
     def hash(block)
       #ブロックのSHA-256ハッシュを作る
       # 必ずディクショナリ（辞書型のオブジェクト）がソートされている必要がある。そうでないと、一貫性のないハッシュとなってしまう
-      return SHA256.hexdigest(block.to_json)
+      return Digest::SHA256.hexdigest(block.to_json)
     end
 
     def valid_proof(last_proof, proof)
       guess = "#{last_proof}#{proof}".encode()
-      guess_hash = SHA256.hexdigest(guess)
+      guess_hash = Digest::SHA256.hexdigest(guess)
       return guess_hash[-4, 4] == "0000"
     end
   end
